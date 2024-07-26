@@ -7,7 +7,7 @@ const inscription = async (request, response) => {
     let { nom, prenom, email, password } = request.body;
 
     if(nom == "" || prenom == "" || email == "" || password == ""){
-        response.send("Veuillez remplir tous les champs");
+        response.send({message: "Veuillez remplir tous les champs"});
         return;
     }
     // crypter le mot de passe
@@ -17,7 +17,7 @@ const inscription = async (request, response) => {
     // appel de la méthode saveUser définie dans le userModel
     userModel.saveUser(values, (err, result) => {
         if(err){
-            response.send("erreur lors de l'insertion"); 
+            response.send({message: "erreur lors de l'insertion"}); 
             return;
         }
         // response.send("Inscription realisee", res.insertId); probleme
@@ -29,11 +29,10 @@ const inscription = async (request, response) => {
 const connexion = (request, response) => {
     // récupération des données
     let {email, password} = request.body;
-    console.log(request.body)
 
     userModel.login(email, async(err, result) => {
         if(err){
-            response.send("erreur lors de l'insertion"); 
+            response.status(500).send({messag: "erreur interne au serveur"}); 
             return;
         }
         if(result.length != 0){
@@ -41,7 +40,7 @@ const connexion = (request, response) => {
             let passwordIsValid = await bcrypt.compare(password, user.password);
             // 
             if(!passwordIsValid){
-                console.log("email ou mot de passe incorreect");
+                response.status(404).send({message: "email ou mot de passe incorreect"});
                 return;
             }
             // generation du token
@@ -50,7 +49,9 @@ const connexion = (request, response) => {
                 process.env.SECRET_KEY,
                 { expiresIn: "1h" }
             );
-            response.send({token});
+            response.send({message: "salut", data: token});
+        }else{
+            response.status(404).send({message: "email ou mot de passe incorreect"});
         }
     });    
 }

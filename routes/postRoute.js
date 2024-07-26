@@ -1,8 +1,11 @@
 const express = require('express');
 const PostRoute = express.Router();
-const postContoller = require('../controllers/postController');
+const postController = require('../controllers/postController');
 
-PostRoute.post('/add',  postContoller.addPost);
-PostRoute.get('/getpost/:id', postContoller.getPost);
+PostRoute.post('/add',  postController.addPost);
+PostRoute.get('/getpost/:id', postController.getPost);
+PostRoute.get('/getAll', postController.getAllPosts);
+PostRoute.get('/delete', postController.deletePost);
+PostRoute.post('/update', postController.updatePost);
 
 module.exports = PostRoute;

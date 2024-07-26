@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const postModel = require('../models/postModel');
 
-
+// ajouter un post
 const addPost = (request, response) => {
     let { titre, commentaire } = request.body;
     // verifier si le token est inclu dans l'entete de la reque
@@ -30,7 +30,7 @@ const addPost = (request, response) => {
         });
     })
 }
-
+// recuperer un post via son identifiant
 const getPost = (request, response) => {
     let id = request.params.id;
     postModel.getPostById(id, (error, res) => {
@@ -46,7 +46,50 @@ const getPost = (request, response) => {
     })
 }
 
+// recuperer tous les posts
+const getAllPosts = (request, response) => {
+    postModel.getAllPosts((err, res) => {
+        if(err){
+            response.send({"message":"erreur interne"});
+            return;
+        }
+        response.send({message: "voici la liste", list: res});
+    })
+}
+
+// methode pour supprimer un post
+const deletePost = (request, response) => {
+    let id =request.params.id;
+
+    postModel.deletePost((error, result) => {
+        if(error){
+            response.send({"message":"erreur interne"});
+            return;
+        }
+        response.send({message: "Post supprime"});
+    })
+}
+// methode pour la modification d'un post
+const updatePost = (request, response) => {
+    let {id, titre, commentaire} = request.body;
+    let token = request.headers.authorization;
+    token = token.split(" ")[1];
+
+    let tokenValid = jwt.verify(process.env.SECRET_KEY, token);
+
+    if(tokenValid){
+        postModel.updatePost([id,titre, commentaire], (err, result) => {
+            response.send({"message":"erreur interne"});
+            return;
+        })
+        response.send({message: "Post mise a jour"});
+    }
+}
+
 module.exports = {
     addPost,
-    getPost
+    getPost,
+    getAllPosts,
+    deletePost,
+    updatePost
 }
