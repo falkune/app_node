@@ -26,7 +26,7 @@ const getAllPosts = (callback) => {
 
 // methode pour supprimer un post
 const deletePost = (id, callback) => {
-    let sql = "DELETE FROM post WHERE id = ?";
+    let sql = "DELETE FROM posts WHERE id = ?";
     connexion.query(sql, [id], (err, res) => {
         callback(err, res);
     })
