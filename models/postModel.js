@@ -40,10 +40,19 @@ const updatePost = (values, callback) => {
     })
 }
 
+// recuperation de la liste des posts d'un utilisateur
+const getUserPost = (id, callback) => {
+    let sql = "SELECT * FROM posts WHERE userId = ?";
+    connexion.query(sql, id, (err, res) => {
+        callback(err, res);
+    })
+}
+
 module.exports = {
     savePost,
     getPostById,
     getAllPosts,
     deletePost,
-    updatePost
+    updatePost,
+    getUserPost
 }

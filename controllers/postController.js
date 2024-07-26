@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const postModel = require('../models/postModel');
+const { request, response } = require('express');
 
 // ajouter un post
 const addPost = (request, response) => {
@@ -83,10 +84,30 @@ const updatePost = (request, response) => {
         }else{
             postModel.updatePost([titre, commentaire, id], (err, result) => {
                 if(err){
-                    response.send({"message":"erreur interne"});
+                    response.send({message: "erreu interne"});
                     return;
                 }
                 response.send({message: "Post mise a jour"});
+            })
+        }
+    })
+}
+
+// methode pour recuperer la liste des posts d'un utilisateur
+const getUserPost = (request, response) => {
+    let token = request.headers.authorization;
+    token = token.split(" ")[1];
+    jwt.verify(token, process.env.SECRET_KEY, (err, result) => {
+        if(err){
+            response.send({"message":"le token n'est pas valide ou expire"});
+            return;
+        }else{
+            postModel.getUserPost(result.userId, (err, res) => {
+                if(err){
+                    response.send({"message":"erreur interne"});
+                    return;
+                }
+                response.send(res);
             })
         }
     })
@@ -97,5 +118,6 @@ module.exports = {
     getPost,
     getAllPosts,
     deletePost,
-    updatePost
+    updatePost,
+    getUserPost
 }

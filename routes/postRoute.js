@@ -7,5 +7,6 @@ PostRoute.get('/getpost/:id', postController.getPost);
 PostRoute.get('/getAll', postController.getAllPosts);
 PostRoute.get('/delete/:id', postController.deletePost);
 PostRoute.post('/update', postController.updatePost);
+PostRoute.get('/postUser', postController.getUserPost);
 
 module.exports = PostRoute;
