@@ -10,7 +10,7 @@ const savePost = (values, callback) => {
 }
 // recuperer un post via son id
 const getPostById = (id, callback) => {
-    let req = "SELECT users.nom, users.prenom, posts.titre, posts.description, posts.id FROM users INNER JOIN posts  ON users.id = posts.userID WHERE posts.id = 2";
+    let req = "SELECT users.nom, users.prenom, posts.titre, posts.description, posts.id FROM users INNER JOIN posts  ON users.id = posts.userID WHERE posts.id = ?";
     connexion.query(req, [id], (err, res) => {
         callback(err, res);
     });
